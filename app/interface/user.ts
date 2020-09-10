@@ -5,6 +5,6 @@ export interface User {
   mobile: string
 };
 
-export interface Error {
-  [key: string : number]: any
-}
+export type Error = {
+  [key in string | number]: any;
+};

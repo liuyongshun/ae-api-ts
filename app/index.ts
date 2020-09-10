@@ -2,6 +2,9 @@ import * as Koa from 'koa';
 import * as koabody from 'koa-body';
 import allRoutes from './router/index';
 import catchError from './middleware/catchError';
+import errors from './middleware/errors';
+
+global.errs = errors;
 
 const bodyParser = require('koa-bodyparser');
 const cors = require('koa2-cors');
@@ -28,8 +31,8 @@ app.use(allRoutes.routes());
 
 // 错误处理
 app.on('error', err => {
-  console.log('server error', err)
+  console.log('服务错误', err)
 });
 
 app.listen(3433);
-console.log('app started at port 3433...');
+console.log('启动成功！端口：3433');
