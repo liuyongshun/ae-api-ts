@@ -28,7 +28,7 @@
   },
   "scripts": {
     "start": "tsc && node dist/index.js",
-    "watch": "nodemon --watch app/**/* -e ts,tsx --exec ts-node ./app/index.ts",
+    "watch": "nodemon --watch 'app/**/*' -e ts,tsx --exec ts-node ./app/index.ts",
     "watch-n": "nodemon --inspect --watch 'app/**/*' -e ts,tsx --exec 'node -r ts-node/register' ./app/index.ts"
   },
   "repository": {

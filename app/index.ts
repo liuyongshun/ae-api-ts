@@ -3,6 +3,16 @@ import * as koabody from 'koa-body';
 import allRoutes from './router/index';
 import catchError from './middleware/catchError';
 import errors from './middleware/errors';
+import success from './middleware/success';
+
+declare global {
+  namespace NodeJS {
+    interface Global {
+      errs: any;
+
+    }
+  }
+}
 
 global.errs = errors;
 
