@@ -4,11 +4,10 @@ class uersMsgService {
   async login (curr: User, isExist: User):  Promise<string> {
     if (isExist) {
       if (curr.password === isExist.password) {
-        return '登陆成功!';
+        return new global.success.HttpSuccess(true);
       }
-      return '密码输入错误';
     }
-    return '用户不存在';
+    return new global.errs.HttpException('用户名或密码错误');
   }
 
   // async register(curr, isExist) {

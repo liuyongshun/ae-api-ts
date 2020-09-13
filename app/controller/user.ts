@@ -12,6 +12,7 @@ class UserMsgController {
 
   async login(ctx: any): Promise<void> {
     const currBody: User = ctx.request.body;
+    console.log(currBody);
     const { error } = schema.validate(currBody);
     if (error) {
       const err = new global.errs.ParameterException(error);
@@ -19,8 +20,8 @@ class UserMsgController {
     }
     try {
       const queryData = await userMsgMongo.findOne({ userName: currBody.userName });
-      const resulet = await uersMsgService.login(currBody, queryData);
-      ctx.body = resulet;
+      const result = await uersMsgService.login(currBody, queryData);
+      ctx.body = result;
     } catch (err) { }
   }
 
