@@ -1,24 +1,29 @@
 {
     "compilerOptions": {
         "module": "commonjs",
-        "target": "es2017",
+        "target": "esnext",
         "strict": true,
         "noImplicitAny": true,
         "moduleResolution": "node",
-        "sourceMap": true,
+        "sourceMap": false,
         "outDir": "dist",  // TS文件编译后会放入到此文件夹内
         "baseUrl": ".",
         "typeRoots": [
-            "./node_modules/@types"
+            "./node_modules/@types",
+            "./interface"
         ],
         "paths": {
             "*": [
-                "node_modules/*",
-                "app/types/*"
+                "./node_modules/@types",
+                "app/types/*",
             ]
         }
     },
     "include": [
         "app/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist"
     ]
 }

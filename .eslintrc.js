@@ -6,7 +6,11 @@ module.exports = {
   ],
   extends: [
     'airbnb-typescript',
-    // 'eslint:recommended',
-    // 'plugin:@typescript-eslint/recommended',
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
   ],
+  "rules": {
+    "indent": [ "warn", 2 ],
+    "no-unused-vars": 0
+  }
 };
