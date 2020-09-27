@@ -8,6 +8,7 @@
 [讲讲tcp三次握手，为什么需要三次握手](https://www.cnblogs.com/xiaolincoding/p/12638546.html)
 
 [koa2](https://chenshenhai.github.io/koa2-note/note/jsonp/info.html)
+[vue 揭秘](https://ustbhuangyi.github.io/vue-analysis/v2/reactive/next-tick.html)
 讲讲 React 生命周期
 webpack 你是如何做优化的
 react 性能优化
@@ -25,41 +26,21 @@ commonjs 的实现原理
 Node 原生 api 错误处理有了解吗
 说说浏览器渲染流程
 说说重绘和重排
-说说那些属性可以直接避免重绘和重排
 treeshaking 原理
 按需加载的原理
-讲讲原型链
 了解过那些前端构建工具 分别介绍他 webpack rollup gulp
 双向数据绑定原理
 说 vue 如何收集依赖的
-Reflect 的用途？
-域名切片
 超大数据加载不卡顿
 懒加载
 UDP TCP 区别
 说说 XSS 攻击
-nextTick 原理
 说说你的 vuex 持久化插件
-什么是暂时性死区？
-call bind new 实现原理
-如何解决移动端 click300ms 延迟？
-移动 1px 问题
 函数柯里化
 diff 算法
 虚拟 dom
-nextTick 原理
-发布订阅和观察者的区别
 怎么做性能优化
 性能监控如何做
-
-跨域解决方案
-
-- node中间件代理跨域
-- jsonp
-- 跨域资源共享(CORS)
-- postMessage跨域
-- location.hash + iframe跨域
-- nginx 代理
 
 字节
 组件库相关问题
@@ -645,102 +626,6 @@ function compose(...fns) {
 ```
 
 
-
-
-
-描述符可拥有的键值
-
-||configurable|	enumerable|	value|	writable	|get|	set
-|-----|-----|-----|-----|-----|-----|-----|
-数据描述符|	可以|	可以|	可以|	可以|	不可以|	不可以
-存取描述符	|可以	|可以	|不可以|	不可以|	可以|	可以
-
-- 如果一个描述符不具有 value、writable、get 和 set 中的任意一个键，那么它将被认为是一个数据描述符
-
-- 如果一个描述符同时拥有 value 或 writable 和 get 或 set 键，则会产生一个异常
-
-#### Reflect 作用
-
-1. 将Object对象的一些属于语言内部的方法（比如Object.defineProperty），放到Reflect对象上
-
-2. 修改某些Object方法的返回结果，让其变得更合理。比如，Object.defineProperty(obj, name, desc)在无法定义属性时，会抛出一个错误，而Reflect.defineProperty(obj, name, desc)则会返回false
-
-3. 让Object操作都变成函数行为。比如name in obj和delete obj[name]，而Reflect.has(obj, name)和Reflect.deleteProperty(obj, name)让它们变成了函数行为
-
-4. 让Proxy对象可以方便地调用对应的Reflect方法，完成默认行为，作为修改行为的基础
-
-
-<!-- nginx =============== -->
-
-配置
-
-location 支持的语法 location [=|~|~*|^~|@] pattern { ... }
-
-### = 要求路径完全匹配
-
-```
-location = /abc { }
-```
-
-- `http://domain.com/abc` 匹配
-- `http://domain.com/ABCD` 可能匹配 ，系统是否大小写敏感
-- `http://domain.com/abc?f=3` 匹配，忽略 querystring
-- `http://domain.com/abc/` 不匹配，带有结尾的/
-- ·http://domain.com/abcde· 不匹配
-
-### ~ 区分大小写的正则匹配
-
-~ 后面写正则规则即可
-
-```
-location ~ ^/abc$ { }
-```
-
-### ~* 不区分大小写的正则匹配
-
-```
-location ~* ^/abc$ { }
-```
-
-### ^~ 开头对URL路径进行前缀匹配，并且在正则之前
-
-前缀匹配时，Nginx 不对 url 做编码，因此请求为 /static/20%/aa，可以被规则 ^~ /static/ /aa 匹配到（注意是空格）
-
-```
-location ^~ /uri {}
-```
-
-### 不带任何修饰符，也表示前缀匹配，但是在正则匹配之后
-
-```
-location /uri	{}
-```
-
-### 通用匹配
-
-任何未匹配到其它location的请求都会匹配到，相当于switch中的default
-
-```
-location / {}
-```
-
-### 查找的顺序及优先级
-
-当有多条 location 规则时，nginx 有一套比较复杂的规则
-
-- 精确匹配 =
-
-- 前缀匹配 ^~（立刻停止后续的正则搜索）
-
-- 按文件中顺序的正则匹配 ~或~*
-
-- 匹配不带任何修饰的前缀匹配
-
-先精确匹配，没有则查找带有 ^~的前缀匹配，没有则进行正则匹配，最后才返回前缀匹配的结果（如果有的话）
-
-```
-
-```
 
 [nginx](https://moonbingbing.gitbooks.io/openresty-best-practices/content/ngx/nginx_local_pcre.html)
 
