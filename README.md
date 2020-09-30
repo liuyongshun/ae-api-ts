@@ -1,4 +1,5 @@
 # ae-api-ts
+[chrome dev](https://developers.google.com/web/fundamentals)
 
 [在浏览器输入 URL 回车之后发生了什么](https://juejin.im/post/6844903922084085773)
 [浏览器缓存](https://juejin.im/post/6844904105329033230#heading-2)
@@ -8,6 +9,7 @@
 [讲讲tcp三次握手，为什么需要三次握手](https://www.cnblogs.com/xiaolincoding/p/12638546.html)
 
 [koa2](https://chenshenhai.github.io/koa2-note/note/jsonp/info.html)
+[vue 揭秘](https://ustbhuangyi.github.io/vue-analysis/v2/reactive/next-tick.html)
 讲讲 React 生命周期
 webpack 你是如何做优化的
 react 性能优化
@@ -25,30 +27,19 @@ commonjs 的实现原理
 Node 原生 api 错误处理有了解吗
 说说浏览器渲染流程
 说说重绘和重排
-说说那些属性可以直接避免重绘和重排
 treeshaking 原理
 按需加载的原理
-讲讲原型链
 了解过那些前端构建工具 分别介绍他 webpack rollup gulp
 双向数据绑定原理
 说 vue 如何收集依赖的
-Reflect 的用途？
-域名切片
 超大数据加载不卡顿
 懒加载
 UDP TCP 区别
 说说 XSS 攻击
-nextTick 原理
 说说你的 vuex 持久化插件
-什么是暂时性死区？
-call bind new 实现原理
-如何解决移动端 click300ms 延迟？
-移动 1px 问题
 函数柯里化
 diff 算法
 虚拟 dom
-nextTick 原理
-发布订阅和观察者的区别
 怎么做性能优化
 性能监控如何做
 [性能监控如何做](https://www.zhihu.com/question/37585246)
@@ -648,102 +639,6 @@ function compose(...fns) {
 
 
 
-
-
-描述符可拥有的键值
-
-||configurable|	enumerable|	value|	writable	|get|	set
-|-----|-----|-----|-----|-----|-----|-----|
-数据描述符|	可以|	可以|	可以|	可以|	不可以|	不可以
-存取描述符	|可以	|可以	|不可以|	不可以|	可以|	可以
-
-- 如果一个描述符不具有 value、writable、get 和 set 中的任意一个键，那么它将被认为是一个数据描述符
-
-- 如果一个描述符同时拥有 value 或 writable 和 get 或 set 键，则会产生一个异常
-
-#### Reflect 作用
-
-1. 将Object对象的一些属于语言内部的方法（比如Object.defineProperty），放到Reflect对象上
-
-2. 修改某些Object方法的返回结果，让其变得更合理。比如，Object.defineProperty(obj, name, desc)在无法定义属性时，会抛出一个错误，而Reflect.defineProperty(obj, name, desc)则会返回false
-
-3. 让Object操作都变成函数行为。比如name in obj和delete obj[name]，而Reflect.has(obj, name)和Reflect.deleteProperty(obj, name)让它们变成了函数行为
-
-4. 让Proxy对象可以方便地调用对应的Reflect方法，完成默认行为，作为修改行为的基础
-
-
-<!-- nginx =============== -->
-
-配置
-
-location 支持的语法 location [=|~|~*|^~|@] pattern { ... }
-
-### = 要求路径完全匹配
-
-```
-location = /abc { }
-```
-
-- `http://domain.com/abc` 匹配
-- `http://domain.com/ABCD` 可能匹配 ，系统是否大小写敏感
-- `http://domain.com/abc?f=3` 匹配，忽略 querystring
-- `http://domain.com/abc/` 不匹配，带有结尾的/
-- ·http://domain.com/abcde· 不匹配
-
-### ~ 区分大小写的正则匹配
-
-~ 后面写正则规则即可
-
-```
-location ~ ^/abc$ { }
-```
-
-### ~* 不区分大小写的正则匹配
-
-```
-location ~* ^/abc$ { }
-```
-
-### ^~ 开头对URL路径进行前缀匹配，并且在正则之前
-
-前缀匹配时，Nginx 不对 url 做编码，因此请求为 /static/20%/aa，可以被规则 ^~ /static/ /aa 匹配到（注意是空格）
-
-```
-location ^~ /uri {}
-```
-
-### 不带任何修饰符，也表示前缀匹配，但是在正则匹配之后
-
-```
-location /uri	{}
-```
-
-### 通用匹配
-
-任何未匹配到其它location的请求都会匹配到，相当于switch中的default
-
-```
-location / {}
-```
-
-### 查找的顺序及优先级
-
-当有多条 location 规则时，nginx 有一套比较复杂的规则
-
-- 精确匹配 =
-
-- 前缀匹配 ^~（立刻停止后续的正则搜索）
-
-- 按文件中顺序的正则匹配 ~或~*
-
-- 匹配不带任何修饰的前缀匹配
-
-先精确匹配，没有则查找带有 ^~的前缀匹配，没有则进行正则匹配，最后才返回前缀匹配的结果（如果有的话）
-
-```
-
-```
-
 [nginx](https://moonbingbing.gitbooks.io/openresty-best-practices/content/ngx/nginx_local_pcre.html)
 
 
@@ -751,6 +646,198 @@ location / {}
 
 [ts](https://juejin.im/post/6844904037922373639#heading-31)
 
+[虚拟列表](https://juejin.im/post/6844903893441183751)
 
+
+[大数据](https://www.zhihu.com/question/267560156)
 
 <!-- 时间切片 -->
+
+把长任务分割成若干个小任务执行，比如1s 改成 10 个 100ms
+
+两个API
+
+- window.requestAnimationFrame
+- window.requestIdleCallback
+
+**window.requestAnimationFrame**
+
+- 告诉浏览器执行一个动画，并在下次重绘之前调用指定的回调函数
+
+- 若想继续更新下一帧动画，那么回调函数自身必须再次调 `window.requestAnimationFrame`
+
+- 回调函数会被传入DOMHighResTimeStamp参数，指示当前被 requestAnimationFrame 排序的回调函数被触发的时间
+
+**使用**
+
+**单一帧**
+
+```
+window.requestAnimationFrame((e) => {
+  console.log(e, 'eee')
+})
+```
+
+**每一帧都执行**
+
+```
+const renderAnimation = () => {
+    window.requestAnimationFrame((e) => {
+        console.log(e)
+        renderAnimation()
+    })
+}
+renderAnimation()
+```
+
+requestAnimationFrame 兼容性非常好
+
+**window.requestIdleCallback**
+
+- 在浏览器的空闲时段内调用的函数
+
+- 函数一般会按先进先调用的顺序执行，如果回调函数指定了执行超时时间timeout，则有可能为了在超时前执行函数而打乱执行顺序
+
+**使用**
+
+**单一帧**
+
+```
+window.requestIdleCallback((e) => {
+  console.log(e, 'eee')
+})
+```
+
+**每一帧**
+
+- 每一帧，并不一定是每一帧，要看该帧执行完后是否有空余时间，如果有，则执行
+
+- 指定 timeout 字段，可以保证让回调在超过 timeout 指定的时间后，执行一次。如果不指定，回调可能几秒钟都不会执行（浏览器一直没有空闲帧）
+
+```
+const renderAnimation = () => {
+    window.requestIdleCallback((e) => {
+        console.log(e.didTimeout)
+        renderAnimation()
+    }, { timeout: 5} )
+}
+renderAnimation()
+```
+
+**DocumentFragment**
+
+- 一个没有父对象的最小文档对象。作为一个轻量版的 Document 使用，存储由节点（nodes）组成的文档结构
+
+- 不是真实 DOM 树的一部分，它的变化不会触发 DOM 树的重新渲染，且不会导致性能等问题
+
+- 最常用的方法是使用文档片段作为参数承接appendChild, insertBefore 方法添加的节点
+
+- 然后将 DocumentFragment 添加到指定的dom位置，这种情况下片段的所有子节点, 而非片段本身。因为所有的节点会被一次插入到文档中，只进行一次重渲染的操作
+
+- 可以使用document.createDocumentFragment 方法或者构造函数来创建一个空的 DocumentFragment
+
+```
+// HTML
+<ul class="list"></ul>
+
+// JS
+let listData = document.querySelector('.list')
+let text = ['1', '2', '3']
+
+let fragment = new DocumentFragment()
+
+text.forEach(function (m) {
+let li = document.createElement('li')
+li.innerHTML = m
+  // 利用 DocumentFragment 充当介质，可以一次性将多个 li 插入。不必引入额外的标签
+  // DocumentFragment 并非真实的 dom 不会插入新的 dom 实体
+  // 也不会产生重绘操作
+  fragment.appendChild(li)
+})
+
+listData.appendChild(fragment)
+```
+
+- 接下来简单实现一个10万数据加载，如果一次性加载肯定是免不了卡顿的
+
+- 将10万数据分到每一帧（16ms）处理，一帧加载20条
+
+**优点**
+
+1. 首次加载不会卡顿很久白屏
+2. 滑动滚动条时，不会出现严重的闪屏
+
+```
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        .list {
+            width: 300px;
+            left: 50%;
+        }
+        .list li {
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 6px;
+        }
+    </style>
+    <ul class="list"></ul>
+    <script>
+        let list = document.querySelector('.list')
+        let total = 100000
+        let curPage = 20
+        let index = 0
+        const render = (total, index) => {
+            if (total <= 0) {
+                return
+            }
+            // requestAnimationFrame 每一帧都执行  ==========
+            window.requestAnimationFrame((e) => {
+                console.log(e)
+                let domFra = new DocumentFragment()
+                for (let i = 0; i < curPage; ++i) {
+                    let item = document.createElement('li')
+                    item.innerText = `我是${index + i}`
+                    domFra.appendChild(item)
+                }
+                list.appendChild(domFra)
+                render(total - curPage, index + curPage)
+            })
+        }
+        render(total, index)
+    </script>
+  </body>
+</html>
+
+```
+
+**浏览器每一帧做什么**
+
+
+
+// 浏览器并不需要执行所有步骤。如果没有新的 HTML 要解析，那么解析 HTML 的步骤就不会触发
+// 1. 开始新的一帧。垂直同步信号触发，开始渲染新的一帧图像。
+// 2. 输入事件和用户交互事件处理。所有的事件处理函数（touchmove，scroll，click）都应该最先触发
+// 3. requestAnimationFrame。这是更新屏幕显示内容的理想位置，因为现在有全新的输入数据，又非常接近即将到来的垂直同步信号。其他的可视化任务，比如样式计算，因为是在本次任务之后，所以现在是变更元素的理想位置。如果你改变了 —— 比如说 100 个类的样式，这不会引起 100 次样式计算；它们会在稍后被批量处理。唯一需要注意的是，不要查询进行计算才能得到的样式或者布局属性（比如 el.style.backgroundImage 或 el.style.offsetWidth）。如果你这样做了，会导致重新计算样式，或者布局，或者二者都发生，进一步导致强制同步布局，乃至布局颠簸。
+// 4. 解析 HTML（Parse HTML）。处理新添加的 HTML，创建 DOM 元素。
+// 5. 重新计算样式（Recalc Styles）。为新添加或变更的内容计算样式。可能要计算整个 DOM 树，也可能缩小范围
+// 6. 布局（Layout）。计算每个可见元素的几何信息（每个元素的位置和大小）。一般作用于整个文档，计算成本通常和 DOM 元素的大小成比例。
+// 7. 更新图层树（Update Layer Tree）。这一步创建层叠上下文，为元素的深度进行排序。
+// 8. Paint 第一步，对所有新加入的元素，或进行改变显示状态的元素，记录 draw 调用（这里填充矩形，那里写点字）；第二步是栅格化（Rasterization，见后文），在这一步实际执行了 draw 的调用，并进行纹理填充。Paint 过程记录 draw 调用，一般比栅格化要快，但是两部分通常被统称为“painting”。
+// 9. 合成（Composite）：图层和图块信息计算完成后，被传回合成线程进行处理。这将包括 will-change、重叠元素和硬件加速的 canvas 等。
+// 10. 栅格化规划（Raster Scheduled）和栅格化（Rasterize）：在 Paint 任务中记录的 draw 调用现在执行。过程是在合成图块栅格化线程（Compositor Tile Workers）中进行，线程的数量取决于平台和设备性能。例如，在 Android 设备上，通常有一个线程，而在桌面设备上有时有 4 个。栅格化根据图层来完成，每层都被分成块。
+// 11. 帧结束：各个层的所有的块都被栅格化成位图后，新的块和输入数据（可能在事件处理程序中被更改过）被提交给 GPU 线程。
+// 12. 发送帧：最后，但同样很重要的是，图块被 GPU 线程上传到 GPU。GPU 使用四边形和矩阵（所有常用的 GL 数据类型）将图块 draw 在屏幕上。
+// 13. 本帧 还有剩余时间，执行requestIdleCallback
+
+[资料](https://developers.google.com/web/fundamentals/performance/rendering/)
+[视频](https://www.youtube.com/watch?v=Lpk1dYdo62o)
