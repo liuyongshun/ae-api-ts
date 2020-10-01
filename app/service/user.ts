@@ -14,13 +14,13 @@ class uersMsgService {
 
   async register(curr: RUser): Promise<Record<string, unknown>> {
     const isExist = await userMsgMongo.findOne({ mobile: curr.mobile });
-    if (isExist && isExist.length) {
-      return new global.errs.HttpException('用户已存在');
+    console.log(isExist, 'ffff')
+    if (isExist) {
+      return new global.errs.HttpException('手机号已绑定');
     }
-    // const newUser = new userMsgMongo(curr);
-    console.log(curr, 'llll')
-    const aa = userMsgMongo.updateOne({ mobile: curr.mobile }, curr, {upsert: true});
-    console.log(aa)
+    userMsgMongo.create(curr, (err: any) => {
+      console.log(err);
+    });
     return new global.success.HttpSuccess(true, '注册成功！');
   }
 }

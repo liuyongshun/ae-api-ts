@@ -1,4 +1,5 @@
 // import mongoose from 'mongoose';
+const uuid = require('node-uuid');
 const mongoose = require('mongoose');
 
 const DB_URL: string = 'mongodb+srv://liuyongshun:kuaile0716@cluster0-pmxhd.mongodb.net/react?retryWrites=true&w=majority';
