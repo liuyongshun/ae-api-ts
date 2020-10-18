@@ -3,34 +3,43 @@
 
 [在浏览器输入 URL 回车之后发生了什么](https://juejin.im/post/6844903922084085773)
 [浏览器缓存](https://juejin.im/post/6844904105329033230#heading-2)
-[深拷贝循环引用](https://juejin.im/post/6844903998823088141)
-[vue 和 react 的区别](https://segmentfault.com/a/1190000018742160)
-[webpack 工作流](https://juejin.im/post/6844904161515929614)
 [讲讲tcp三次握手，为什么需要三次握手](https://www.cnblogs.com/xiaolincoding/p/12638546.html)
 
+[深拷贝循环引用](https://juejin.im/post/6844903998823088141)
+
+[webpack 工作流](https://juejin.im/post/6844904161515929614)
+[](https://github.com/lgwebdream/FE-Interview/issues/25)
 [koa2](https://chenshenhai.github.io/koa2-note/note/jsonp/info.html)
+[vue 和 react 的区别](https://segmentfault.com/a/1190000018742160)
 [vue 揭秘](https://ustbhuangyi.github.io/vue-analysis/v2/reactive/next-tick.html)
+[flutter](https://zhuanlan.zhihu.com/p/63771307)
+
+怎么做性能优化
 [首屏优化](https://zhuanlan.zhihu.com/p/56121620)
 [性能指标](https://juejin.im/post/6844903662020460552#heading-4)
-[flutter](https://zhuanlan.zhihu.com/p/63771307)
-讲讲 React 生命周期
+[性能监控如何做](https://www.zhihu.com/question/37585246)
+[性能监控如何做](https://cloud.tencent.com/developer/article/1650831)
+[性能监控如何做](https://juejin.im/post/6844904094784552973)
+[预加载](https://juejin.im/entry/6844903990002450446)
+[面试题](https://juejin.im/post/6847902225423925255)
+
+性能监控如何做
 webpack 你是如何做优化的
 https://shubo.io/babel-preset-env/
 react 性能优化
+
+讲讲 React 生命周期
 vue 如何做权限检验
 讲讲 http2.0
 如何实现 Redux 异步功能
 Redux 如何优化
 
 Koa 中间件原理
-Redux 工作流？
 Koa 如何实现监控处理
 commonjs 的实现原理
 讲讲垃圾回收机制
 函数式编程 如何理解纯函数
 Node 原生 api 错误处理有了解吗
-说说浏览器渲染流程
-说说重绘和重排
 treeshaking 原理
 按需加载的原理
 了解过那些前端构建工具 分别介绍他 webpack rollup gulp
@@ -42,21 +51,6 @@ UDP TCP 区别
 说说 XSS 攻击
 说说你的 vuex 持久化插件
 函数柯里化
-diff 算法
-虚拟 dom
-怎么做性能优化
-性能监控如何做
-[性能监控如何做](https://www.zhihu.com/question/37585246)
-[性能监控如何做](https://cloud.tencent.com/developer/article/1650831)
-[性能监控如何做](https://juejin.im/post/6844904094784552973)
-跨域解决方案
-
-- node中间件代理跨域
-- jsonp
-- 跨域资源共享(CORS)
-- postMessage跨域
-- location.hash + iframe跨域
-- nginx 代理
 
 字节
 组件库相关问题
