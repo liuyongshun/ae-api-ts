@@ -34,13 +34,13 @@ const app = new Koa();
 // });
 
 app.use(cors({
-  origin: function () {
-      return '*';
+  origin: function (ctx: any) {
+      return ctx.header.origin; // 域名结尾不能有 /
   },
-  exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
-  maxAge: 5,
+  exposeHeaders: ['custom'], // 设置客户端可以获取其他自定义字段
+  maxAge: 5,   // 指定本次预检请求的有效期，单位为秒， option 请求
   Expires: new Date(Date.now() + 20000),
-  credentials: true,
+  credentials: true, // 因为要携带 cookie 这里要配置为true
   allowMethods: ['GET', 'POST', 'DELETE', 'OPTION', 'PUT'],
   allowHeaders: ['Content-Type', 'Authorization', 'Accept', 'Content-Length', 'credentials', 'X-Access-Token', 'Cache-Control', 'Pragma', 'X-Requested-With']
 }));
