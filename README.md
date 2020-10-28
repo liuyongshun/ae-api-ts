@@ -32,6 +32,8 @@ react 性能优化
 讲讲 React 生命周期
 vue 如何做权限检验
 讲讲 http2.0
+[2.0](https://juejin.im/post/6844903559952089102)
+[电子书](https://zhuanlan.zhihu.com/p/46369385)
 如何实现 Redux 异步功能
 Redux 如何优化
 
@@ -357,10 +359,85 @@ declare global {
 hook 动机
 
 
-<!--  -->
+<!-- ================================ -->
+箭头函数
+
+1. 函数体内的this对象，就是定义时所在的对象，而不是使用时所在的对象
+
+```
+// 尽管100毫秒后执行，但是总是指向函数定义生效时所在的对象
+function foo() {
+  setTimeout(() => {
+    console.log('id:', this.id);
+  }, 100);
+}
+var id = 21;
+foo.call({ id: 42 });
+```
+
+2. 不可以当作构造函数，也就是说，不可以使用new命令，否则会抛出一个错误
+
+```
+const A  = () => {}
+const b = new A() // A is not a constructor
+```
+
+箭头函数根本没有自己的this，导致内部的this就是外层代码块的this。正是因为它没有this，所以也就不能用作构造函数
+
+3. 不可以使用arguments对象，该对象在函数体内不存在。如果要用，可以用 rest 参数代替
+
+```
+const ac = () => {
+  console.log(arguments) // arguments is not defined
+}
+```
+
+4. 不可以使用yield命令，因此箭头函数不能用作 Generator 函数
+
 函数编程
 
+**核心思想：**把运算过程尽量写成一系列嵌套的函数调用
+
 函数副作用指当调用函数时，除了返回函数值之外，还对主调用函数产生附加的影响。例如修改全局变量（函数外的变量），修改参数或改变外部存储。
+
+**偏函数**
+
+使用一个函数并将其应用一个或多个参数，但不是全部参数，在这个过程中创建一个新函数，这个函数用于接受剩余的参数，严格来讲是一个减少函数参数个数（arity）的过程
+
+```
+function multiply (a, b, c) {
+  return a * b * c;
+}
+
+// 生产偏函数
+function partial (fn, a) {
+  return function (b, c) {
+    return fn(a, b, c)
+  }
+}
+
+//变量parMulti接受返回的新函数
+var parMulti = partial(multiply, 1);
+
+//在调用的时候传入剩余的参数
+parMulti(2,3); // 6
+```
+
+如果一个函数接收多个实参，你可能会想先指定部分实参（稳定的实参），余下的稍后再指定
+
+考虑如下业务场景：
+
+你要发起多个已知 URL 的 API 请求，但这些请求的数据和处理响应信息的回调函数要稍后才能知道，当然，你可以等到这些东西都确定后再发起 ajax(..) 请求，到那时再引用全局 URL 常量
+
+```
+function ajax(url,data,callback) {}
+```
+
+普通改动：
+
+```
+
+```
 
 **函数就是纯函数**
 
@@ -816,32 +893,7 @@ listData.appendChild(fragment)
     </script>
   </body>
 </html>
-
 ```
-
-**浏览器每一帧做什么**
-
-
-
-// 浏览器并不需要执行所有步骤。如果没有新的 HTML 要解析，那么解析 HTML 的步骤就不会触发
-// 1. 开始新的一帧。垂直同步信号触发，开始渲染新的一帧图像。
-// 2. 输入事件和用户交互事件处理。所有的事件处理函数（touchmove，scroll，click）都应该最先触发
-// 3. requestAnimationFrame。这是更新屏幕显示内容的理想位置，因为现在有全新的输入数据，又非常接近即将到来的垂直同步信号。其他的可视化任务，比如样式计算，因为是在本次任务之后，所以现在是变更元素的理想位置。如果你改变了 —— 比如说 100 个类的样式，这不会引起 100 次样式计算；它们会在稍后被批量处理。唯一需要注意的是，不要查询进行计算才能得到的样式或者布局属性（比如 el.style.backgroundImage 或 el.style.offsetWidth）。如果你这样做了，会导致重新计算样式，或者布局，或者二者都发生，进一步导致强制同步布局，乃至布局颠簸。
-// 4. 解析 HTML（Parse HTML）。处理新添加的 HTML，创建 DOM 元素。
-// 5. 重新计算样式（Recalc Styles）。为新添加或变更的内容计算样式。可能要计算整个 DOM 树，也可能缩小范围
-// 6. 布局（Layout）。计算每个可见元素的几何信息（每个元素的位置和大小）。一般作用于整个文档，计算成本通常和 DOM 元素的大小成比例。
-// 7. 更新图层树（Update Layer Tree）。这一步创建层叠上下文，为元素的深度进行排序。
-// 8. Paint 第一步，对所有新加入的元素，或进行改变显示状态的元素，记录 draw 调用（这里填充矩形，那里写点字）；第二步是栅格化（Rasterization，见后文），在这一步实际执行了 draw 的调用，并进行纹理填充。Paint 过程记录 draw 调用，一般比栅格化要快，但是两部分通常被统称为“painting”。
-// 9. 合成（Composite）：图层和图块信息计算完成后，被传回合成线程进行处理。这将包括 will-change、重叠元素和硬件加速的 canvas 等。
-// 10. 栅格化规划（Raster Scheduled）和栅格化（Rasterize）：在 Paint 任务中记录的 draw 调用现在执行。过程是在合成图块栅格化线程（Compositor Tile Workers）中进行，线程的数量取决于平台和设备性能。例如，在 Android 设备上，通常有一个线程，而在桌面设备上有时有 4 个。栅格化根据图层来完成，每层都被分成块。
-// 11. 帧结束：各个层的所有的块都被栅格化成位图后，新的块和输入数据（可能在事件处理程序中被更改过）被提交给 GPU 线程。
-// 12. 发送帧：最后，但同样很重要的是，图块被 GPU 线程上传到 GPU。GPU 使用四边形和矩阵（所有常用的 GL 数据类型）将图块 draw 在屏幕上。
-// 13. 本帧 还有剩余时间，执行requestIdleCallback
-
-[资料](https://developers.google.com/web/fundamentals/performance/rendering/)
-[视频](https://www.youtube.com/watch?v=Lpk1dYdo62o)
-
-
 
 
 
