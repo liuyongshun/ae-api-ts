@@ -402,32 +402,31 @@ const ac = () => {
 
 **偏函数**
 
-使用一个函数并将其应用一个或多个参数，但不是全部参数，在这个过程中创建一个新函数，这个函数用于接受剩余的参数，严格来讲是一个减少函数参数个数（arity）的过程
+- 使用一个函数并将其应用一个或多个参数，但不是全部参数
+
+- 在这个过程中创建一个新函数，这个函数用于接受剩余的参数
+
+- 严格来讲是一个减少函数参数个数（arity）的过程
 
 ```
-function multiply (a, b, c) {
-  return a * b * c;
-}
-
 // 生产偏函数
-function partial (fn, a) {
-  return function (b, c) {
-    return fn(a, b, c)
-  }
+function partial(fn,...presetArgs) {
+    return function partiallyApplied(...laterArgs){
+        return fn( ...presetArgs, ...laterArgs );
+    };
 }
 
-//变量parMulti接受返回的新函数
-var parMulti = partial(multiply, 1);
 
-//在调用的时候传入剩余的参数
-parMulti(2,3); // 6
 ```
+partial(..) 函数接收 fn 参数，来表示被我们偏应用实参的函数。presetArgs 数组收集了后面传入的实参，保存起来稍后使用
+
+创建并 return 了一个新的内部函数，该函数中，laterArgs 数组收集了全部实参
 
 如果一个函数接收多个实参，你可能会想先指定部分实参（稳定的实参），余下的稍后再指定
 
 考虑如下业务场景：
 
-你要发起多个已知 URL 的 API 请求，但这些请求的数据和处理响应信息的回调函数要稍后才能知道，当然，你可以等到这些东西都确定后再发起 ajax(..) 请求，到那时再引用全局 URL 常量
+你要发起多个已知 URL 的 API 请求，但这些请求的数据(data)和处理响应信息的回调函数(cb)要稍后才能知道
 
 ```
 function ajax(url,data,callback) {}
@@ -435,11 +434,158 @@ function ajax(url,data,callback) {}
 
 普通改动：
 
-```
+从偏函数定义来说 getPerson 或 getOrder 就是 ajax 的偏函数，不过下面的写法容易冗余复杂。每一个 url 都要对应一个声明函数
 
 ```
+function getPerson(data,cb) {
+  ajax( "http://some.api/person", data, cb );
+}
 
-**函数就是纯函数**
+function getOrder(data,cb) {
+  ajax( "http://some.api/order", data, cb );
+}
+```
+
+为了避免太多的函数，我们是不是可以考虑知道一台机器，来根据 url 快速的生成偏函数，这就用到上面的 partial 方法。
+
+```
+var getPerson = partial( ajax, "http://some.api/person");
+var getOrder = partial( ajax, "http://some.api/order" );
+```
+
+**看一段代码**
+```
+function ajax (...arg) {
+    console.log(arg)
+}
+
+function partial (fn,...presetArgs) {
+    return function partiallyApplied (...laterArgs) {
+        return fn( ...presetArgs, ...laterArgs)
+    }
+}
+var more = partial(ajax, 'a')
+var more1 = partial(more, 'b')
+var more2 = partial(more1, 'c')
+more2('d')
+
+// 输出
+["a", "b", "c", "d"]
+```
+
+核心点：
+
+传入一个应用函数，返回一个新的函数（偏函数），而新的函数又可以作为应用函数传入，实现参数层层添加
+
+实现一个数组的元素统一增加某个值。
+
+```
+function add (x, y) {
+    return x + y;
+}
+
+const arr = [1,2,3,4,5]
+const newArr = arr.map(function adder(...val) {
+    return add( 3, val );
+});
+```
+
+使用偏函数的方式
+
+```
+const pArr = arr.map(partial(add, 3))
+```
+将 partial 返回的新函数作为 map 方法的函数，map 的每一项内容，都会传递给 add 的 y 形参，并每次执行 add。这段代码要仔细想一想，理解其中含义
+
+**一次传一个柯里化**
+
+我们来看一个跟偏应用类似的技术，该技术将一个期望接收多个实参的函数拆解成连续的链式函数（chained functions），每个链式函数接收单一实参（实参个数：1）并返回另一个接收下一个实参的函数
+
+这就是柯里化（currying）技术
+
+```
+curry (a, b, c)
+
+// 柯里化
+
+curry(a)(b)(c)
+```
+
+该函数在每次调用中，一次只接收一个实参，而不是一次性接收所有实参，也不是先传部分实参再传剩余部分实参（partial）
+
+如果一个原函数期望接收 3 个实参，这个函数的柯里化形式只会接收第一个实参，并且返回一个用来接收第二个参数的函数。而这个被返回的函数又只接收第二个参数，并且返回一个接收第三个参数的函数。依此类推。
+
+```
+const aa = curry(a)
+const bb = aa(b)
+const cc = bb(c)
+```
+
+柯里化:
+
+```
+function curry(fn,arity = fn.length) {
+    return (function nextCurried(prevArgs) {
+        return function curried(nextArg) {
+            var args = prevArgs.concat([nextArg])
+        // return function curried(...nextArg) {
+          // var args = prevArgs.concat(nextArg)
+            if (args.length >= arity) {
+                return fn(...args)
+            } else {
+                return nextCurried(args)
+            }
+        }
+    })([])
+}
+```
+
+- 把空数组 [] 当作 prevArgs 的初始实参集合
+
+- 将每次接收到的 nextArg 同 prevArgs 连接成 args 数组
+
+- 当 args.length 小于 arity（原函数 fn(..) 被定义的形参数量）时，返回另一个 curried(..) 函数用来接收下一个 nextArg 实参，与此同时将 args 实参集合作为唯一的 prevArgs 参数传入 nextCurried(..) 函数。一旦我们收集了足够长度的 args 数组，就用这些实参触发原函数 fn(..)
+
+整个逻辑下来, 执行业务逻辑的内容都是在curry的入参函数内,中间过程主要是拆分参数, 并封装其他逻辑
+
+严格柯里化: 柯里化调用每个函数,每次只处理一个参数 `curry(1)(2)(3)`
+
+松散柯里化: 可以处理多个参数 `curry(1)(2, 3)`
+
+松散柯里化允许你传入超过形参数量的实参。如果你将函数的参数设计成可配的或变化的，那么松散柯里化将会有利于你.
+
+
+
+**柯里化和偏函数**
+
+使用柯里化和偏应用可以将指定分离实参的时机和地方独立开来，而传统函数调用则需要预先确定所有实参。如果你在代码某一处只获取了部分实参，然后在另一处确定另一部分实参，这个时候柯里化和偏应用就能派上用场
+
+当函数只有一个形参时，我们能够比较容易地组合它们。因此，如果一个函数最终需要三个实参，那么它被柯里化以后会变成需要三次调用，每次调用需要一个实参的函数。当我们组合函数时，这种单元函数的形式会让我们处理起来更简单。
+
+
+**函数就是纯函数 & 副作用**
+
+什么是函数副作用,我们看两段代码
+
+```
+function foo(x) {
+    return x * 2;
+}
+var y = foo( 3 );
+```
+这段代码, 调用值为 3 的 foo 将具有返回值 6 的效果，调用函数 foo() 是起因，然后将其赋值给 y 是结果
+
+```
+function foo(x) {
+    y = x * 2;
+}
+var y;
+foo( 3 );
+```
+
+这段代码有相同的输出，但是却有很大的差异，这里的因果是没有联系的, 这种方式设置 y 就是我们所说的副作用
+
+
 
 ```
 f(x) {
