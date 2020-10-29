@@ -33,6 +33,8 @@ react 性能优化
 讲讲 React 生命周期
 vue 如何做权限检验
 讲讲 http2.0
+[2.0](https://juejin.im/post/6844903559952089102)
+[电子书](https://zhuanlan.zhihu.com/p/46369385)
 如何实现 Redux 异步功能
 Redux 如何优化
 
@@ -358,285 +360,40 @@ declare global {
 hook 动机
 
 
-<!--  -->
-函数编程
+<!-- ================================ -->
+箭头函数
 
-函数副作用指当调用函数时，除了返回函数值之外，还对主调用函数产生附加的影响。例如修改全局变量（函数外的变量），修改参数或改变外部存储。
-
-**函数就是纯函数**
+1. 函数体内的this对象，就是定义时所在的对象，而不是使用时所在的对象
 
 ```
-f(x) {
-    return x + 1
-  }
-f(x)
-```
-**非纯函数**
-
-q(x)访问了函数外部的变量
-```
-  a = 0
-  q(x) {
-    b = a
-  }
-```
-
-函数内部有隐式（Implicit）的数据流，这种情况叫做副作用（Side Effect）。上述的I/O，外部变量等，都可以归为副作用。因此，纯函数的定义也可以写为“没有副作用的函数”
-
-```
-function foo(x) {
-    y = x * 2;
+// 尽管100毫秒后执行，但是总是指向函数定义生效时所在的对象
+function foo() {
+  setTimeout(() => {
+    console.log('id:', this.id);
+  }, 100);
 }
-
-var y;
-
-foo( 3 );
-```
-这段代码有相同的输出，但是却有很大的差异，这里的因果是没有联系的。这个影响是间接的。这种方式设置 y 就是我们所说的副作用。
-
-注意： 当函数引用外部变量时，这个变量就称为自由变量。并不是所有的自由变量引用都是不好的，但是我们要对它们非常小心。
-
-
-使用固定的状态
-避免副作用就意味着函数 foo(..) 不能引用自由变量了吗？
-
-思考下这段代码：
-
-function foo(x) {
-    return x + bar( x );
-}
-
-function bar(x) {
-    return x * 2;
-}
-
-foo( 3 );            // 9
-很明显，对于函数 foo(..) 和函数 bar(..)，唯一和直接的原因就是参数 x。但是 bar(x) 被称为什么呢？bar 仅仅只是一个标识符，在 JS 中，默认情况下，它甚至不是一个常量（不可重新分配的变量）。foo(..) 函数依赖于 bar 的值，bar 作为一个自由变量被第二个函数引用。
-
-所以说这个函数还依赖于其他的原因吗？
-
-我认为不。虽然可以用其他的函数来重写 bar 这个变量，但是在代码中我没有这样做，这也不是我的惯例或先例。无论出于什么意图和目的，我的函数都是常量（从不重新分配）。
-
-思考一下：
-
-const PI = 3.141592;
-
-function foo(x) {
-    return x * PI;
-}
-
-foo( 3 );            // 9.424776000000001
-注意： JavaScript 有内置的 Math.PI 属性，所以我们在本文中仅仅是用 PI 做一个方便的说明。在实践中，总是使用 Math.PI 而不是你自己定义的。
-
-上面的代码怎么样呢？PI 是函数 foo(..) 的一个副作用吗？
-
-两个观察结果将会合理地帮助我们回答这个问题：
-
-想一下是否每次调用 foo(3)，都将会返回 9.424..？答案是肯定的。 如果每一次都给一个相同的输入（x），那么都将会返回相同的输出。
-
-你能用 PI 的当前值来代替每一个 PI 吗，并且程序能够和之前一样正确地的运行吗？是的。 程序没有任何一部分依赖于 PI 值的改变，因为 PI 的类型是 const，它是不能再分配的，所以变量 PI 在这里只是为了便于阅读和维护。它的值可以在不改变程序行为的情况下内联。
-
-我的结论是：这里的 PI 并不违反减少或避免副作用的精神。在之前的代码也没有调用 bar(x)。
-
-在这两种情况下，PI 和 bar 都不是程序状态的一部分。它们是固定的，不可重新分配的（“常量”）的引用。如果他们在整个程序中都不改变，那么我们就不需要担心将他们作为变化的状态追踪他们。同样的，他们不会损害程序的可读性。而且它们也不会因为变量以不可预测的方式变化，而成为错误的源头。
-
-注意： 在我看来，使用 const 并不能说明 PI 不是副作用；使用 var PI 也会是同样的结果。PI 没有被重新分配是问题的关键，而不是使用 const。我们将在后面的章节讨论 const。
-
-
-
-<!--  -->
-一些不易观察的副作用被用于性能优化的操作
-```
-var cache = [];
-function specialNumber(n) {
-        // 如果我们已经计算过这个特殊的数，
-    // 跳过这个操作，然后从缓存中返回
-    if (cache[n] !== undefined) {
-        return cache[n];
-    }
-    var x = 1, y = 1;
-    for (let i = 1; i <= n; i++) {
-        x += i % 2;
-        y += i % 3;
-    }
-    cache[n] = (x * y) / (n + 1);
-    return cache[n];
-}
-
-specialNumber( 6 );                // 4
-specialNumber( 42 );            // 22
-specialNumber( 1E6 );            // 500001
-specialNumber( 987654321 );        // 493827162
-
-````
-这种性能优化方面的副作用是通过隐藏缓存结果产生的，因此它们不能被程序的任何其他部分所观察到。但是 cache 可能发生意想不到的改变。
-
-思考一下：
-```
-var specialNumber = (function memoization(){
-    var cache = [];
-    return function specialNumber(n){
-            // 如果我们已经计算过这个特殊的数，
-            // 跳过这个操作，然后从缓存中返回
-        if (cache[n] !== undefined) {
-            return cache[n];
-        }
-
-        var x = 1, y = 1;
-
-        for (let i = 1; i <= n; i++) {
-            x += i % 2;
-            y += i % 3;
-        }
-
-        cache[n] = (x * y) / (n + 1);
-
-        return cache[n];
-    };
-})();
+var id = 21;
+foo.call({ id: 42 });
 ```
 
-上面代码通过 IIFE 隔离 cache ，保证定程序任何的部分都不能观察或修改它们，避免副作用
-
-
-如果副作用的本质是使用词法自由变量，并且您可以选择修改周围的代码，那么您可以使用作用域来封装它们。
-
-<!-- 值的不可变性 -->
-
-常量：一个无法进行重新赋值（reassignment）的变量。
-
-**以不可变的眼光看待数据**
+2. 不可以当作构造函数，也就是说，不可以使用new命令，否则会抛出一个错误
 
 ```
-function updateLastLogin(user) {
-    var newUserRecord = Object.assign( {}, user );
-    newUserRecord.lastLogin = Date.now();
-    return newUserRecord;
-}
+const A  = () => {}
+const b = new A() // A is not a constructor
+```
+
+箭头函数根本没有自己的this，导致内部的this就是外层代码块的this。正是因为它没有this，所以也就不能用作构造函数
+
+3. 不可以使用arguments对象，该对象在函数体内不存在。如果要用，可以用 rest 参数代替
 
 ```
-将 user 看做一个不应该被改变的数据来对待；对比一下下面的实现：
-
-```
-function updateLastLogin(user) {
-    user.lastLogin = Date.now();
-    return user;
+const ac = () => {
+  console.log(arguments) // arguments is not defined
 }
 ```
 
-这个版本更容易实现，性能也会更好一些，但直接改变了user 在维护时难以排查，且可能产生其他问题。
-
-应当总是将 user 看做不可变的值，这样我们就没必要知道数据从哪里来，也没必要担心数据改变会引发潜在问题。
-
-总结：
-
-值的不可变性并不是不改变值。它是指在程序状态改变时，不直接修改当前数据，而是创建并追踪一个新数据。这使得我们在读代码时更有信心，因为我们限制了状态改变的场景，状态不会在意料之外或不易观察的地方发生改变。
-
-由于其自身的信号和意图，const 关键字声明的常量通常被误认为是强制规定数据不可被改变。事实上，const 和值的不可变性声明无关，而且使用它所带来的困惑似乎比它解决的问题还要大。另一种思路，内置的 Object.freeze(..) 方法提供了顶层值的不可变性设定。大多数情况下，使用它就足够了。
-
-对于程序中性能敏感的部分，或者变化频繁发生的地方，处于对计算和存储空间的考量，每次都创建新的数据或对象（特别是在数组或对象包含很多数据时）是非常不可取的。遇到这种情况，通过类似 Immutable.js 的库使用不可变数据结构或许是个很棒的主意。
-
-值不变在代码可读性上的意义，不在于不改变数据，而在于以不可变的眼光看待数据这样的约束。
-
-
-### 函数组合
-
-- 起初你有一个将小写转化成大写和截取字符串的长度的两个函数
-
-```
-function upper (str) {
-  return str.toUpperCase()
-}
-
-function splitStr (str, start = 3) {
-  return str.substr(start)
-}
-```
-
-- 某一天你需要将小写转化大写，并截取第3位数之后的数据，你可以先存储一个中间变量，然后在赋值个另一个函数进行处理，但是一旦该功能在多出被使用后，代码就变得冗余，杂乱，难以维护
-
-```
-const str = 'abcdefg'
-const temp1 = upper(str)
-const result1 = splitStr(temp1)
-
-const temp2 = upper(str)
-const result2 = splitStr(temp2)
-```
-
-整合直接将输出放到输入
-
-```
-const str = 'abcdefg'
-const result = splitStr(upper(str))
-```
-
-**函数组合思想**
-
-将独立功能的函数返回直接作为其他函数的输入
-
-```
-function compose (str) {
-  return splitStr(upper(str))
-}
-```
-
-类比事务：
-
-将数据的流向想象成糖果工厂的一条生产线，糖果原料入口相当于输入字符串，传送带相当于数据的操作（中间变量）中转，糖果成品相当于输出结果。
-
-销量好时我们需要生产更多的糖果，因此要提升生产效率，过多的增加生产线是不可行的，会占用更过空间。因此要采用其他的改良方式。聪明的工人想到一个好的办法，去掉传送带，将输入和输出接在一起，这样就不在需要在传送带上慢吞吞的移动了。
-
-
-```
-const str = 'abcdefg'
-const result = splitStr(upper(str))
-```
-
-
-越来越多的新生产线被安装，发现每次组装,都要产生好多的线路，看起来非常乱，于是工人想为什么不给它套一个外壳，让他看起来干净整齐。
-
-
-```
-function compose (str) {
-  return splitStr(upper(str))
-}
-```
-
-虽然工程发展越来越好，机器不断增加，发现从A商家买了的原料处理机器和B商家买来的糖果输出机器，每次都要组合安装，浪费人力。所以工程师们联系了一家工业机器制供应商来帮他们，刚好供应商有 机器合成生产线 可以快速组装甚至还给做了非常好看的包装。这牛x的组装生产线，不仅可以组装糖果机器，还可以组装其他的类似的输入输出机器。非常的上天
-
-```
-function compose2(fn2,fn1) {
-    return function composed(origValue){
-        return fn2( fn1( origValue ) );
-    };
-}
-
-```
-定义参数的顺序是 fn2,fn1，第二个函数（也被称作 fn1）会首先运行，然后才是参数中的第一个函数（fn2），以从右往左的顺序组合的。
-
-大部分传统的 FP 库为了顺序而将它们的定义为从右往左的工作
-
-
-###　通用组合
-
-如果我们能够定义两个函数的组合，我们也同样能够支持组合任意数量的函数
-
-```
-function compose(...fns) {
-    return function composed(result){
-        // 拷贝一份保存函数的数组
-        var list = fns.slice();
-        while (list.length > 0) {
-            // 将最后一个函数从列表尾部拿出并执行，从右往左的执行顺序
-            result = list.pop()( result );
-        }
-
-        return result;
-    };
-}
-```
-
+4. 不可以使用yield命令，因此箭头函数不能用作 Generator 函数
 
 
 [nginx](https://moonbingbing.gitbooks.io/openresty-best-practices/content/ngx/nginx_local_pcre.html)
@@ -817,7 +574,6 @@ listData.appendChild(fragment)
     </script>
   </body>
 </html>
-
 ```
 
 
