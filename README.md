@@ -1,5 +1,7 @@
 # ae-api-ts
 [chrome dev](https://developers.google.com/web/fundamentals)
+[node](https://juejin.im/post/6844903908385488903)
+[Cluster](https://jancat.github.io/post/2019/node-cluster-workers-ipc/)
 
 [在浏览器输入 URL 回车之后发生了什么](https://juejin.im/post/6844903922084085773)
 [浏览器缓存](https://juejin.im/post/6844904105329033230#heading-2)
@@ -14,6 +16,7 @@
 [vue 和 react 的区别](https://segmentfault.com/a/1190000018742160)
 [vue 揭秘](https://ustbhuangyi.github.io/vue-analysis/v2/reactive/next-tick.html)
 [flutter](https://zhuanlan.zhihu.com/p/63771307)
+[移动端跳转](https://zhuanlan.zhihu.com/p/43881250)
 
 怎么做性能优化
 
