@@ -37,10 +37,18 @@ app.use(cors({
   origin: function (ctx: any) {
       return ctx.header.origin; // 域名结尾不能有 /
   },
+<<<<<<< HEAD
   exposeHeaders: ['custom'], // 设置客户端可以获取其他自定义字段
   maxAge: 5,   // 指定本次预检请求的有效期，单位为秒， option 请求
   Expires: new Date(Date.now() + 20000),
   credentials: true, // 因为要携带 cookie 这里要配置为true
+=======
+  exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
+  maxAge: 10000,
+  Expires: new Date(Date.now() + 20000),
+  'Cache-Control': 'max-age=200',
+  credentials: true,
+>>>>>>> fe5b08e5c8c4504c498b8449fb886e2c91af35d1
   allowMethods: ['GET', 'POST', 'DELETE', 'OPTION', 'PUT'],
   allowHeaders: ['Content-Type', 'Authorization', 'Accept', 'Content-Length', 'credentials', 'X-Access-Token', 'Cache-Control', 'Pragma', 'X-Requested-With']
 }));

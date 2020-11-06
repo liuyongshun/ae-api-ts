@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+      <script>
+        $.ajax({
+          type: "post",
+          url: 'http://localhost:7777/api/v1/login',
+          data: JSON.stringify({
+            userName: '七月',
+            password: 'kuaile333'
+          }),
+          beforeSend: function(request) {
+            // request.setRequestHeader("max-age", 100000);
+            request.setRequestHeader("Content-type","application/json");
+          },
+          success : function(res) {
+            console.log(res)
+          }
+        })
+      </script>
+  </body>
+</html>
