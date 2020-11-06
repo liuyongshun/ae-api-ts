@@ -6,7 +6,6 @@
 [在浏览器输入 URL 回车之后发生了什么](https://juejin.im/post/6844903922084085773)
 [浏览器缓存](https://juejin.im/post/6844904105329033230#heading-2)
 [讲讲tcp三次握手，为什么需要三次握手](https://www.cnblogs.com/xiaolincoding/p/12638546.html)
-
 [深拷贝循环引用](https://juejin.im/post/6844903998823088141)
 
 [webpack 工作流](https://juejin.im/post/6844904161515929614)
@@ -14,10 +13,12 @@
 [](https://github.com/lgwebdream/FE-Interview/issues/25)
 [koa2](https://chenshenhai.github.io/koa2-note/note/jsonp/info.html)
 [vue 和 react 的区别](https://segmentfault.com/a/1190000018742160)
+[vue 和 react 的区别](https://juejin.im/post/6844903671461838862)
 [vue 揭秘](https://ustbhuangyi.github.io/vue-analysis/v2/reactive/next-tick.html)
 [flutter](https://zhuanlan.zhihu.com/p/63771307)
 [移动端跳转](https://zhuanlan.zhihu.com/p/43881250)
-
+[小程序](https://juejin.im/post/6844904029630234632#heading-1)
+[TORA](https://mp.weixin.qq.com/s?__biz=MzU3NDkzMTI3MA==&mid=2247483770&idx=1&sn=ba2cdea5256e1c4e7bb513aa4c837834)
 怎么做性能优化
 
 [首屏优化](https://zhuanlan.zhihu.com/p/56121620)
@@ -1122,3 +1123,90 @@ URL 输入后做了什么===============================================
 #### 接受响应
 
 #### 渲染页面
+
+
+前端方向：
+
+底层化
+ - vue
+ - vdom
+ - AST
+ - paser 编写
+ - acorn 包
+ - 编译原理
+ - diff
+ - 项目架构
+ - 前端工具链
+ - webpack
+ - node
+ - lint
+ - test
+ - babel
+ - 设计模式 & 结合业务需求落地
+ - mvvm
+ - observer
+
+全面化
+ - c / c++
+ - linux
+ - shell
+ - file
+ - permission
+ - service
+ - net
+ - security
+ - cpu
+ - io
+ - memory
+ - 工具
+ - git
+ - nginx
+ - 计算机网络
+ - tcp/ip
+ - 数据库
+ - mysql
+ - mongodb
+ - redis
+ - chrome v8 & gecko & webkit
+ - js html css
+ - es
+ - ts
+ - deno(rust)
+ - jquery
+ - vue
+ - react
+ - angular
+ - rxjs lodash ...
+ - sass less ...
+ - node.js
+ - koa
+ - express
+ - midway
+ - nestjs
+ - npm & yarn
+ - webpack & rollup
+ - electron
+ - rn
+ - 小程序
+ - wasm
+ - go
+ - docker
+ - k8s
+ - java
+ - python
+
+业务化
+
+ - 服务对象
+ - 前端
+ - 后端
+ - 产品
+ - 运维
+ - 测试
+ - 业务场景
+ - 在线网课
+ - 营销系统
+ - 商城
+ - 数据可视化
+ - 游戏
+ - vr
